@@ -5,7 +5,7 @@ require_relative './song'
 module Jockey
   class Queue
     PLAYLIST = 'iTunes DJ'
-
+    votes = Hash.new
     class << self
       def playlist
         Player.playlist(PLAYLIST)
@@ -38,8 +38,9 @@ module Jockey
         # 4. [d, a*, b*, c*]
 
         songs.flatten!
-        songs.map!(&:record)
-
+	        
+        #songs.map!(&:record)
+        #puts YAML::dump(songs)
         lock.synchronize do # because it's not simple steps
           app = Appscript.app('iTunes')
 
@@ -48,13 +49,23 @@ module Jockey
           exists = playlist.tracks[Appscript.its.index.gt(offset).and(Appscript.its.index.le(size))]
 
           songs.each do |song|
-            song.duplicate to: playlist
+           if votes.has_key?(song.id)
+              count = votes[song.id]
+              count += 1
+              votes[song.id] = count
+           end
+           else
+              votes[song.id] = 1
+           end
+           puts "Queued: " + song.id	
+           #puts YAML::dump(song)
+           song.record.duplicate to: playlist
           end
           exists.duplicate to: playlist
 
           playlist.delete exists
           songs.each do |song|
-            playlist.delete playlist.tracks[Appscript.its.persistent_ID.eq(song.persistent_ID.get).and(Appscript.its.index.gt(offset+songs.size))]
+            playlist.delete playlist.tracks[Appscript.its.persistent_ID.eq(song.record.persistent_ID.get).and(Appscript.its.index.gt(offset+songs.size))]
           end
         end
       end
