@@ -17,7 +17,7 @@ group :development do
 end
 
 gem "rb-appscript"
-
+gem "redis"
 gem "sinatra"
 gem "thin"
 
