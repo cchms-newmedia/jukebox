@@ -1,3 +1,4 @@
+r = Redis.new
 %section{class: "song#{(even ||= nil) ? " even" : ""}"}
   - song = OpenStruct.new(name: "", id: "DUMMY", artist: "") unless song
   %div.artwork
@@ -11,4 +12,4 @@
         %a{href: "/album/#{u(song.album)}", data: {pjax: '#content'}}=h song.album
   - if enque ||= false
     %div.enque_wrap
-      %a.enque{href: "/enque/#{song.id}", data: {song: song.id}} +
+      %a.enque{href: "/enque/#{song.id}", data: {song: song.id}} {r.hmget('votes:' + song.id , 'count')[0]}

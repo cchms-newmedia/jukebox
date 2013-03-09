@@ -3,7 +3,7 @@
 require 'sinatra'
 require_relative '../models/player'
 require_relative '../models/queue'
-
+require 'redis'
 module Jockey
   class App < Sinatra::Base
     get '/' do

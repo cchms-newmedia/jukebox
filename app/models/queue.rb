@@ -46,20 +46,16 @@ module Jockey
           app = Appscript.app('iTunes')
 
           size = playlist.tracks.get.size
-
           exists = playlist.tracks[Appscript.its.index.gt(offset).and(Appscript.its.index.le(size))]
-          swag = r.get('votes')
-          if swag.to_s.strip.length == 0
-             votes = Hash.new
-          else
-             puts swag
-             votes = JSON.parse(swag)
-          end
+          #puts YAML::dump(exists)
           songlist = Hash.new
           songs.each do |song|
             if r.sismember('sorted', song.id)
-              votes = r.hmget('votes:' + song.id , 'count').first
-              votes =+ 1
+              puts "yoloswag"
+              votes = Integer(r.hmget('votes:' + song.id , 'count')[0])
+              puts YAML::dump(votes)
+              votes = votes + 1
+              puts "votes: " + votes.to_s
               #count = votes[song.id]
               #count += 1
               #votes[song.id] = count
@@ -70,27 +66,29 @@ module Jockey
               r.hmset('votes:' + song.id, 'count', 1)
               puts "new song"
             end
-           songlist[song.id] = song
+           #songlist[song.id] = song
            puts "Queued: " + song.id	
            
            #puts YAML::dump(song)
            #song.record.duplicate to: playlist
           end
-          r.set('votes', votes.to_json)
-          votes.sort_by {|k,v| v}.reverse
-          puts YAML::dump(votes)
-          votes.each do |key, value|
-             puts "song id: " + key
-             vote = Song.find(key)
-             puts "song name: " + vote.name             
+          #r.set('votes', votes.to_json)
+          #votes.sort_by {|k,v| v}.reverse
+          votes = r.sort('sorted', {:by => 'votes:*->count', :order => 'DESC'})
+          votes.each do |songid|
+             puts "song id: " + songid
+             vote = Song.find(songid)
+             puts "song name: " + vote.name            
+             puts "vote count: " + r.hmget('votes:' + songid , 'count').first 
              vote.record.duplicate to: playlist
           end
           exists.duplicate to: playlist
-
+        
           playlist.delete exists
-          songs.each do |song|
-            playlist.delete playlist.tracks[Appscript.its.persistent_ID.eq(song.record.persistent_ID.get).and(Appscript.its.index.gt(offset+songs.size))]
-          end
+          #votes.each do |songid|
+          #  song = Song.find(songid)
+          #  playlist.delete playlist.tracks[Appscript.its.persistent_ID.eq(song.record.persistent_ID.get).and(Appscript.its.index.gt(offset+songs.size))]
+          #end
         end
       end
 
