@@ -1,6 +1,7 @@
 require 'sprockets'
 require 'thin'
 require "#{File.dirname(__FILE__)}/app/app.rb"
+require 'redis'
 
 {styles: 'app/styles', scripts: 'app/scripts'}.each do |name, path|
   env = Sprockets::Environment.new
@@ -8,6 +9,7 @@ require "#{File.dirname(__FILE__)}/app/app.rb"
 
   map("/#{name}") { run env }
 end
+
 
 class Stats
   def initialize(app)
@@ -23,5 +25,5 @@ class Stats
     response
   end
 end
-
+#t1 = Thread.new{update()}
 map('/') { run Stats.new(Jockey::App) }

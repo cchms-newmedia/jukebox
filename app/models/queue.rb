@@ -82,7 +82,7 @@ module Jockey
              puts "vote count: " + r.hmget('votes:' + songid , 'count').first 
              vote.record.duplicate to: playlist
           end
-          exists.duplicate to: playlist
+         #exists.duplicate to: playlist
         
           playlist.delete exists
           #votes.each do |songid|

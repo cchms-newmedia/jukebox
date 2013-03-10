@@ -24,10 +24,16 @@ module Jockey
         last_playing = nil
         last_upcoming = nil
         last_history = nil
+        r = Redis.new
         begin
           loop do
             if last_playing != (playing = Player.playing)
               out.call "event: playing\n"
+              #cache = r.get('playing')
+              puts "song changed omgggg!!!!11"
+              r.hdel('votes:' + playing.id, 'count')
+              r.srem('sorted',  playing.id)
+
               out.call "data: #{playing.to_hash.to_json}\n\n"
               html.call "event: playing\n"
               html.call "data: #{{html: haml(:song, layout: false, locals: {song: playing})}.to_json}\n\n"
