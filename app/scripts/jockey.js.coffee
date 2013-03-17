@@ -10,7 +10,7 @@ jQuery ->
       $("h1").text("Loading")
     else
       console.log("Loaded")
-      $("h1").text("Jockey")
+      $("h1").text("Jükebox")
 
   set_hooks = ->
     unless searching

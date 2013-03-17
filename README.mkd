@@ -26,13 +26,24 @@ I've just wanted to provide controlling iTunes DJ from web.
 
 ### OS X and iTunes
 
-Jockey is designed for iTunes DJ.
 
+iTunes 11 Setup
+----------------
+In iTunes, create a playlist named iTunes DJ
+![](http://i.imgur.com/w9GpphC.png)
+
+
+iTunes 10
+--------------
 1. Go iTunes' preferences, check 'iTunes DJ'.
 2. Open 'iTunes DJ' in the source pane, then click "Settings".
 3. Make sure __"Voting" is disabled__.
 
 ![](https://img.skitch.com/20120506-f5b263ncc711qeuypp5bd29pnw.png)
+
+
+
+
 
 ### Ruby
 
@@ -50,7 +61,7 @@ Jockey is written in Ruby. 1.9.2 or higher is required.
 
     $ bundle exec ./start
 
-<http://localhost:9292/>
+<http://localhost:3000/>
 
 (__NOTE:__ we should do `thin -R config.ru` instead of `rackup` because of Sinatra's bug.)
 
@@ -64,6 +75,9 @@ Jockey is written in Ruby. 1.9.2 or higher is required.
 
 * APIs (of course!)
 
+## TODO
+* Upload new songs into library
+
 ## Why not play?
 
 [play](https://github.com/play/play) has the following problems (I think):
@@ -73,9 +87,6 @@ Jockey is written in Ruby. 1.9.2 or higher is required.
   * Pusher, not bad. It's awesome.
   * but there are limitation: 20 connections, 100000 messages / day in free account... (See [Pricing](http://pusher.com/pricing) page)
 
-* Why use Redis?
-
-  * I think play doesn't need redis.
 
 I've wanted just control my iTunes DJ, so conside using play if you want more feature.
 
