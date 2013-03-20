@@ -18,6 +18,7 @@ end
 
 gem "rb-appscript"
 gem "redis"
+gem "twitter"
 gem "sinatra"
 gem "thin"
 
